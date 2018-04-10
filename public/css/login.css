@@ -1,0 +1,22 @@
+body{
+    background-color: #EBEEF5;
+}
+.box-card{
+    text-align: center;
+    margin-top: 100px;
+}
+.box-card .el-input{
+    width: 300px;
+    margin-top: 30px;
+}
+
+.box-card .el-button {
+    width: 300px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.box-card p{
+    font-size: 20px;
+    color: #666;
+    font-weight: bold;
+}

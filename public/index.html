@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+    <!-- import Vue before Element -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <!--左边导航栏-->
+        <el-aside width="220px">
+            <h2>华联超市管理系统</h2>
+            <h4><a href="views/iframe_main.html" target="main">管理首页</a>&nbsp;&nbsp;  | &nbsp;&nbsp;<a href="#" v-on:click="sign_out">退出系统</a></h4>
+            <!--左边导航栏-->
+            <el-menu :default-openeds="['4']">
+                <el-submenu index="1">
+                    <template slot="title">分类管理</template>
+                    <el-menu-item index="1-2"><a href="#">添加分类</a></el-menu-item>
+                    <el-menu-item index="1-1"><a href="#">分类管理</a></el-menu-item>
+                </el-submenu>
+
+                <el-submenu index="2">
+                    <template slot="title">商品管理</template>
+                    <el-menu-item index="2-1"><a href="#">添加商品</a></el-menu-item>
+                    <el-menu-item index="2-2"><a href="#">商品管理</a></el-menu-item>
+                </el-submenu>
+
+                <el-submenu index="3">
+                    <template slot="title">帐号管理</template>
+                    <el-menu-item index="3-1"><a href="views/iframe_manger.html" target="main">帐号管理</a></el-menu-item>
+                    <el-menu-item index="3-2"><a href="#">修改密码</a></el-menu-item>
+                </el-submenu>
+
+                <el-submenu index="4">
+                    <template slot="title">系统管理</template>
+                    <el-menu-item index="4-1"><a href="#">系统信息</a></el-menu-item>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <!--右边主体-->
+        <iframe src="views/iframe_main.html" name="main"></iframe>
+
+    </el-container>
+
+    <el-dialog
+            title="提示"
+            :visible="dialogVisible"
+            width="30%">
+        <span>确认退出吗？</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible_true">确 定</el-button>
+          </span>
+    </el-dialog>
+</div>
+</body>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            activeName: '1',
+            s_username:"",
+            dialogVisible:false
+        },
+        mounted:function () {
+            this.$http.post(
+                'http://localhost:80/supermarket/app/controller/session/session.php',
+            )
+                .then(function (session) {
+                        var s_username=session.body.username;
+                        this.s_username=s_username;
+                })
+        },
+        methods:{
+            sign_out:function () {
+                this.dialogVisible=true;
+            },
+            dialogVisible_true:function () {
+                this.dialogVisible=false;
+                this.$http.post(
+                    'http://localhost:80/supermarket/app/controller/session/signOut.php',
+                )
+                    .then(function (data) {
+                        console.log(data.body);
+                        if(data.body.length==0){
+                            location.href="http://localhost:80/supermarket/public/views/login.html"
+                        }
+                    })
+            }
+        }
+    })
+</script>
+</html>
+
+
+

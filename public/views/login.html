@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <!-- import Vue before Element -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <el-col :span="8" :offset="8">
+            <el-card class="box-card">
+                <el-row >
+                        <el-row><p>华联超市后台管理系统</p></el-row>
+                        <el-row>
+                            <el-row>
+                                <el-input type="text" placeholder="请输入用户名" v-model="username" ></el-input>
+                            </el-row>
+                            <el-row>
+                                <el-input type="password" placeholder="请输入密码" v-model="password" ></el-input>
+                            </el-row>
+                                <el-button type="primary" @click="login">登录</el-button>
+                        </el-row>
+                </el-row>
+            </el-card>
+        </el-col>
+
+        <el-dialog
+                title="提示"
+                :visible="dialogVisible"
+                width="30%">
+                <span>用户名或密码错误，请重新输入！</span>
+                <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          </span>
+        </el-dialog>
+    </div>
+
+</body>
+</html>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            username:"",
+            password:"",
+            dialogVisible:false,
+        },
+        methods:{
+            login:function () {
+                var _that=this;
+                var username=this.username;
+                var password=this.password;
+                if(this.username!="" && this.password!=""){
+                    this.$http.post(                           // vue-resource发起AJAX请求
+                        'http://localhost:80/supermarket/app/controller/login/checklogin.php',                     // 请求地址
+                        {                                              // 请求参数
+                            username:username,
+                            password:password
+                        },
+                        {emulateJSON: true}             // 请求会以application/x-www-form-urlencoded作为MIME type
+                    )
+                        .then(
+                            function (data) {
+                                var code=data.body;
+                                if(code=="0000"){
+                                    location.href="http://localhost:80/supermarket/public/index.html"
+                                }else{
+                                    _that.dialogVisible=true
+                                }
+                            })
+                        .catch(function (res) {
+
+                        })
+                }else{
+                    this.$message.error('用户名或密码不能为空哦！');
+                }}
+        }
+    })
+</script>
